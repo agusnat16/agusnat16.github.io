@@ -1,91 +1,56 @@
 (function () {
   "use strict";
 
-
   window.App = {
-    currentScene: null,
-    scenes: {},
     isShown: true,
 
     initialize: function () {
-      this.$wrap = $('.wrap');
-
-      $$legend.show();
+      this.$wrap = $('#wrap');
 
       this.setEvents();
 
-      // start navigation
       $$nav.on();
     },
 
     setEvents: function () {
-      var self = this,
-        $bg = $('.bg');
-
-      // click on menu item
-      $('.menu').on('click', '.menu-item', function ( e ) {
-        var scene = e.currentTarget.getAttribute('data-content');
-        self.showContent(scene);
-      });
-
+       var /*$bg = $('#sleepbg'),*/ $playerinfo = $('#playerinfo'), $msg = $('#playerinfo .msg');
+	   
       $(document.body).on({
-        // on keyboard 'd' by default
         'nav_key:blue': _.bind(this.toggleView, this),
-
-        // remote events
-        'nav_key:stop': function () {
+        'nav_key:red': function () {
           Player.stop();
-        },
-        'nav_key:pause': function () {
-          Player.togglePause();
-        },
-        'nav_key:exit': function(){
-          SB.exit();
         }
       });
-
-      // toggling background when player start/stop
-      Player.on('ready', function () {
-        $bg.hide();
-        $$log('player ready');
+      Player.on('error', function () {
+		$msg.text('Reconectando');
+		$playerinfo.show();
+		Player.stop(true);
+		Player.play(window.url);
       });
-      Player.on('stop', function () {
-        $bg.show();
-        $$log('player stop');
+	  Player.on('bufferingBegin', function () {
+		$msg.text('Cargando...');
+		$playerinfo.show();
+        //$bg.hide();
       });
-
+      Player.on('bufferingEnd', function () {
+		$playerinfo.delay(1000).fadeOut("slow");
+      });
+		Player.on('stop', function () {
+		$msg.text('Detenido');
+		$playerinfo.show();
+		//$bg.show();
+	});
 
     },
 
     toggleView: function () {
       if (this.isShown) {
         this.$wrap.hide();
-        $$legend.hide();
       } else {
         this.$wrap.show();
-        $$legend.show();
       }
       this.isShown = !this.isShown;
-    },
-
-    showContent: function ( scene ) {
-      var cur = this.currentScene,
-        newScene = this.scenes[scene];
-
-      if ( cur !== newScene ) {
-        if ( !newScene ) {
-          $$error('Scene ' + scene + ' doesn\'t exist');
-        } else {
-          if ( cur ) {
-            cur.hide();
-          }
-          newScene.show();
-          this.currentScene = newScene;
-        }
-      }
     }
   };
-
-  // main app initialize when smartbox ready
   SB(_.bind(App.initialize, App));
 })();

@@ -1,46 +1,267 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE html
-        PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta http-equiv="Content-Type" content="text/html; Charset=UTF-8"/>
-    <title>IPTV</title>
-    <link rel="stylesheet" href="css/input.css"/>
-    <link rel="stylesheet" href="css/keyboard.css"/>
-    <link rel="stylesheet" href="css/legend.css"/>
-    <link rel="stylesheet" href="css/style.css"/>
+   <head>
+	<meta http-equiv="Content-Type" content="text/html; Charset=UTF-8"/>
+	<link rel="stylesheet" href="css/reset.css"/>
+	<style type="text/css">
+		body {
+			background: #000;
+			width: 1280px;
+			height: 720px;
+			position: relative;
+			overflow: hidden;
+			font-family: Helvetica, Arial, Verdana, Sans-Serif;
+		}
+		
+		#wrap {
+			z-index: 2;
+			height: 100%;
+			position: relative;
+		}
+		
+		#chList {
+			position: absolute; 
+			width: 250px;
+			height: 720px;
+			bottom: 34px;
+			background: #4e4e4e;
+			background: rgba(78,78,78,0.80);
+			overflow: hidden;
+		}
+		
+		#chList ul {
+			height: 687px;
+			margin-top: 34px;
+			width: 300px;
+			overflow: auto;
+		}
+		
+		#chList li {
+			color: #fff;
+			height: 60px;
+			line-height: 60px;
+			font-size: 20px;
+			cursor: pointer;
+			padding-left: 20px;
+			border-style: solid;
+			border-bottom: 1px solid #5e5e5e;
+		}
+		
+		#chList li:focus {
+			background: #f23c55;
+			border-color: #f23c55;
+		}
+		
+		#chList i {
+			height: 40px;
+			width: 40px;
+			margin: 0 16px -14px 0;
+			display: inline-block;
+			background-color: #fff;
+			border-radius: 100%;
+		}
+		
+		.americatv {
+			background: url('img/canales32.png') no-repeat 4px 10px;
+		}
+		
+		.el13 {
+			background: url('img/canales32.png') no-repeat 4px -24px;
+		}
+		
+		.telefe {
+			background: url('img/canales32.png') no-repeat 4px -58px;
+		}
+		
+		.tycsports {
+			background: url('img/canales32.png') no-repeat 4px -94px;
+		}
+		
+		.cinemax {
+			background: url('img/canales32.png') no-repeat 4px -138px;
+		}
+		
+		.fx {
+			background: url('img/canales32.png') no-repeat 4px -169px;
+		}
+		
+		.e {
+			background: url('img/canales32.png') no-repeat 4px -217px;
+		}
 
-    <script type="text/javascript" src="../../src/libs/jquery-1.10.2.min.js"></script>
-    <script type="text/javascript" src="../../src/libs/lodash.compat.min.js"></script>
-    <script type="text/javascript" src="../../src/libs/event_emitter.js"></script>
-    <script type="text/javascript" src="js/lib/smartbox.js"></script>
+		.amc {
+			background: url('img/canales32.png') no-repeat 4px -268px;
+		}	
+		
+		.cartoon {
+			background: url('img/canales32.png') no-repeat 4px -307px;
+		}
+		
+		.fox {
+			background: url('img/canales32.png') no-repeat 4px -349px;
+		}
+		
+		.history {
+			background: url('img/canales32.png') no-repeat 4px -397px;
+		}
+		
+		.mtv {
+			background: url('img/canales32.png') no-repeat 4px -446px;
+		}
+		
+		.warner {
+			background: url('img/canales32.png') no-repeat 4px -501px;
+		}
+		
+		.canal22 {
+			background: url('img/canales32.png') no-repeat 4px -564px;
+		}
+		
+		#info {
+			height: 34px;
+			width: 100%;
+			bottom: 0;
+			background: #0e0e0e;
+			position: absolute;
+			font-size: 16px;
+			color: #5e5e5e;
+			background: rgba(14,14,14,0.85);
+		}
+		
+		#info i {
+			height: 28px;
+			width: 23px;
+			margin: 3px 6px -8px 12px;
+			display: inline-block;
+			border-radius: 3px;
+		}
+		
+		.redbtn {	
+			background: url('img/buttons.png') no-repeat -1px 0;
+		}
+		
+		.bluebtn {	
+			background: url('img/buttons.png') no-repeat -73px 0;
+		}
+		
+		.okbtn {	
+			background: url('img/buttons.png') no-repeat -386px 0;
+		}
+		
+		.chbtn {	
+			background: url('img/buttons.png') no-repeat -334px 0;
+		}
+		
+		#smart_player {
+			width: 1280px;
+			height: 720px;
+			z-index: -1;
+		}
+		
+		#loader {
+			background: #fff url('img/preloader.gif') no-repeat 50% 50%;
+			z-index: 99;
+			height: 100%;
+			width: 100%;
+			position: absolute;
+		}
+		
+		#playerinfo {	
+			position: absolute;
+			height: 50px;
+			width: 150px;
+			right: 0;
+			background: #4e4e4e;
+			background: rgba(78,78,78,0.80);
+			border-radius: 5px;
+			font-size: 18px;
+			color: #fff;
+			text-align: center;
+			line-height: 50px;
+			margin: 15px;
+			display: none;
+			z-index: 3;
+		}
+		
+		#sleepbg {
+			position: absolute;
+			left : 0;
+			top: 0;
+			width: 100%;
+			height: 100%;
+			background: url('img/bg.png');
+			z-index: 0;
+		}
+		</style>
+	<script type="text/javascript" src="js/libs/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="js/libs/lodash.compat.min.js"></script>
+    <script type="text/javascript" src="js/libs/event_emitter.js"></script>
+    <script type="text/javascript" src="js/smartbox.js"></script>
+	<script type="text/javascript" src="js/mcsdecrypt.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
-    <script type="text/javascript" src="videos.js"></script>
-    <script type="text/javascript" src="js/scenes/videos.js"></script>
-    <script type="text/javascript" src="js/scenes/navigation.js"></script>
-    <script type="text/javascript" src="js/scenes/input.js"></script>
-    <script type="text/javascript" src="js/legendTriggers.js"></script>
-</head>
-<body>
+	<!--<script type="text/javascript" src="js/videos.js"></script>-->
+   </head>
+   <body>
+	<div id="loader"></div>
+	<!--<div id="sleepbg"></div>-->
+	<div id="playerinfo">
+		<div class="msg"></div>
+	</div>
+	<div id="wrap">
+		<div id="chList">
+			<ul class="js-scene-video" data-nav_type="hbox" data-nav_loop="false">
+				<li class="video-item nav-item" data-url="http://server3.mgmultimedios.com:8080/canal22/live/playlist.m3u8" data-name="canal22"><i class="canal22"></i>Canal 22</li>
+				<li class="video-item nav-item" data-url="http://prepublish.f.qaotic.net/epa/ngrp:americatvlive-100056_all/Playlist.m3u8"><i class="americatv"></i>America TV</li>
+				<li class="video-item nav-item" data-url="http://prepublish.f.qaotic.net/a03/ngrp:el13_live01-100083_all/Playlist.m3u8" data-name="eltrece"><i class="el13"></i>El Trece</li>
+				<!--<li class="video-item nav-item" data-url="" data-name="telefe"><i class="telefe"></i>Telefe</li>-->
+				<li class="video-item nav-item" data-url="http://clairinlive-a.akamaihd.net/dc-1/live/hls/p/1885581/e/1_8xzo6fux/t/YO19xXbHgW_22sNZezlmTg/index-s32.m3u8"><i class="tycsports"></i>TyC Sports</li>
+				<li class="video-item nav-item" data-url="" data-name="cinemax"><i class="cinemax"></i>Cinemax</li>
+				<li class="video-item nav-item" data-url="" data-name="fx"><i class="fx"></i>FX</li>
+				<li class="video-item nav-item" data-url="" data-name="e"><i class="e"></i>E! Entertainment</li>
+				<li class="video-item nav-item" data-url="" data-name="AMC"><i class="amc"></i>AMC</li>
+				<li class="video-item nav-item" data-url="" data-name="cartoon"><i class="cartoon"></i>Cartoon Network</li>
+				<li class="video-item nav-item" data-url="" data-name="fox"><i class="fox"></i>FOX</li>
+				<li class="video-item nav-item" data-url="" data-name="history"><i class="history"></i>History Channel</li>
+				<li class="video-item nav-item" data-url="" data-name="mtv"><i class="mtv"></i>MTV</li>
+				<li class="video-item nav-item" data-url="" data-name="warner"><i class="warner"></i>Warner</li>
+			</ul>	
+		</div>
+		<div id="info">
+			<i class="chbtn"></i>Arriba/Abajo
+			<i class="okbtn"></i>Reproducir
+			<i class="redbtn"></i>Detener Reproduccion
+			<i class="bluebtn"></i>Ocultar Menu
+		</div>
+	</div>
+   </body>
+   <script type="text/javascript">
+	window.url = "";
+	$(".video-item").on("click", onItemClick);
 
-<!--for better view in browser-->
-<div class="bg"></div>
-
-<div class="wrap">
-
-    <div class="menu">
-
-
-        <ul class="menu-items" data-nav_type="vbox" data-nav_loop="true">
-            <li data-content='video' class="menu-item menu-item_red nav-item">Canales HD</li>
-        </ul>
-    </div>
-
-    <div class="scenes-wrapper">
-        <div class="scene scene_video js-scene-video" data-nav_type="vbox" data-nav_loop="true"></div>
-    </div>
-</div>
-
-
-</body>
+	function  onItemClick (e){
+		if($("#wrap").css('display') == 'none'){
+			return false;
+		}
+		
+		window.url = e.currentTarget.getAttribute('data-url');
+		
+		Player.play({
+			url: window.url,
+			type: "hls"
+		});
+    }
+	
+	function LoadChannels() {
+		$.getJSON( "/getch.php?c=1234", function(data) {
+			$.each( data, function(key, val) {
+				$('*[data-name="' + key + '"]').attr('data-url', MCSdecrypt.dec(val));
+			});
+		}).always(function() {
+			$("#loader").fadeOut("slow");
+		});
+	};
+	
+	LoadChannels();
+	</script>
 </html>
