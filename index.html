@@ -253,7 +253,7 @@
     }
 	
 	function LoadChannels() {
-		$.getJSON( "http://sombre-jackets.000webhostapp.com/getch.php?c=1234", function(data) {
+		$.getJSON( "https://sombre-jackets.000webhostapp.com/getch.php?c=1234", function(data) {
 			$.each( data, function(key, val) {
 				$('*[data-name="' + key + '"]').attr('data-url', MCSdecrypt.dec(val));
 			});
