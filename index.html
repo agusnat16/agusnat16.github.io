@@ -301,7 +301,7 @@
     }
 	
 	function LoadChannels(c) {
-		$.getJSON( "/getch.php?" + c, function(data) {
+		$.getJSON( "https://sombre-jackets.000webhostapp.com/getch.php?" + c, function(data) {
 			$.each(data["dec"], function(key, val) {
 				$('*[data-name="' + key + '"]').attr('data-url', val);
 			});
