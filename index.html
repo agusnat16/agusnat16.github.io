@@ -18,6 +18,7 @@
 			z-index: 2;
 			height: 100%;
 			position: relative;
+			display: none;
 		}
 		
 		#chList {
@@ -160,11 +161,53 @@
 		}
 		
 		#loader {
-			background: #fff url('img/preloader.gif') no-repeat 50% 50%;
+			background: #000 url('img/preloader.gif') no-repeat 50% 50%;
 			z-index: 99;
 			height: 100%;
 			width: 100%;
 			position: absolute;
+		}
+		
+		#loader .login {
+			background: #fff;
+			border-radius: 5px;
+			position: absolute;
+			padding: 25px;
+			top: 50%;
+			left: 50%;
+			margin: -100px 0 0 -150px;
+			font-size: 20px;
+		}
+		#loader .login input{
+			border: 2px solid #1a1a1a;
+			font-size: 18px;
+		}
+		
+		#loader .login input[type=text] {
+			height: 40px;
+			width: 250px;
+			border-radius: 4px 4px 0 0;
+			border-bottom: none;
+			text-align: center;
+		}
+		
+		#loader .login input[type=button] {
+			height: 44px;
+			width: 256px;
+			border-top: none;
+			color: white;
+			padding: 3;
+			background: #1a1a1a;
+			border-radius: 0 0 4px 4px;
+		}
+		
+		#loader .login input[type=button]:focus {
+			background: #f23c55;
+			border-color: #f23c55;
+		}
+		
+		#loader .login input[type=text]:focus {
+			border-color: #f23c55;
 		}
 		
 		#playerinfo {	
@@ -183,16 +226,6 @@
 			display: none;
 			z-index: 3;
 		}
-		
-		#sleepbg {
-			position: absolute;
-			left : 0;
-			top: 0;
-			width: 100%;
-			height: 100%;
-			background: url('img/bg.png');
-			z-index: 0;
-		}
 		</style>
 	<script type="text/javascript" src="js/libs/jquery-1.10.2.min.js"></script>
     <script type="text/javascript" src="js/libs/lodash.compat.min.js"></script>
@@ -203,19 +236,23 @@
 	<!--<script type="text/javascript" src="js/videos.js"></script>-->
    </head>
    <body>
-	<div id="loader"></div>
-	<!--<div id="sleepbg"></div>-->
+	<div id="loader">
+		<div class="login">
+			<input type="text" class="pwd" placeholder="Ingrese el codigo"><br>
+			<input type="button" value="INGRESAR" class="send">
+		</div>
+	</div>
 	<div id="playerinfo">
 		<div class="msg"></div>
 	</div>
 	<div id="wrap">
 		<div id="chList">
 			<ul class="js-scene-video" data-nav_type="hbox" data-nav_loop="false">
-				<li class="video-item nav-item" data-url="http://server3.mgmultimedios.com:8080/canal22/live/playlist.m3u8" data-name="canal22"><i class="canal22"></i>Canal 22</li>
-				<li class="video-item nav-item" data-url="http://prepublish.f.qaotic.net/epa/ngrp:americatvlive-100056_all/Playlist.m3u8"><i class="americatv"></i>America TV</li>
-				<li class="video-item nav-item" data-url="http://prepublish.f.qaotic.net/a03/ngrp:el13_live01-100083_all/Playlist.m3u8" data-name="eltrece"><i class="el13"></i>El Trece</li>
+				<li class="video-item nav-item" data-url="" data-name="canal22"><i class="canal22"></i>Canal 22</li>
+				<li class="video-item nav-item" data-url="" data-name="americatv"><i class="americatv"></i>America TV</li>
+				<li class="video-item nav-item" data-url="" data-name="eltrece"><i class="el13"></i>El Trece</li>
 				<!--<li class="video-item nav-item" data-url="" data-name="telefe"><i class="telefe"></i>Telefe</li>-->
-				<li class="video-item nav-item" data-url="http://clairinlive-a.akamaihd.net/dc-1/live/hls/p/1885581/e/1_8xzo6fux/t/YO19xXbHgW_22sNZezlmTg/index-s32.m3u8"><i class="tycsports"></i>TyC Sports</li>
+				<li class="video-item nav-item" data-url="" data-name="tycsports"><i class="tycsports"></i>TyC Sports</li>
 				<li class="video-item nav-item" data-url="" data-name="cinemax"><i class="cinemax"></i>Cinemax</li>
 				<li class="video-item nav-item" data-url="" data-name="fx"><i class="fx"></i>FX</li>
 				<li class="video-item nav-item" data-url="" data-name="e"><i class="e"></i>E! Entertainment</li>
@@ -236,11 +273,22 @@
 	</div>
    </body>
    <script type="text/javascript">
+   
 	window.url = "";
 	$(".video-item").on("click", onItemClick);
-
+	$(".send").on("click", onLoginClick);
+	
+	function onLoginClick() {
+		var c =  $.trim($(".pwd").val());
+		
+		if(c) {
+			$("#loader form").hide();
+			LoadChannels(c);
+		}
+	}
+	
 	function  onItemClick (e){
-		if($("#wrap").css('display') == 'none'){
+		if($("#wrap").is(":visible") && $("#loader").is(":hidden")){
 			return false;
 		}
 		
@@ -252,16 +300,20 @@
 		});
     }
 	
-	function LoadChannels() {
-		$.getJSON( "https://sombre-jackets.000webhostapp.com/getch.php?c=1234", function(data) {
-			$.each( data, function(key, val) {
+	function LoadChannels(c) {
+		$.getJSON( "/getch.php?" + c, function(data) {
+			$.each(data["dec"], function(key, val) {
+				$('*[data-name="' + key + '"]').attr('data-url', val);
+			});
+			$.each(data["enc"], function(key, val) {
 				$('*[data-name="' + key + '"]').attr('data-url', MCSdecrypt.dec(val));
 			});
-		}).always(function() {
+		}).done(function() {
 			$("#loader").fadeOut("slow");
+			$("#wrap").show();
+		}).fail(function() {
+			$("#loader form").show();
 		});
 	};
-	
-	LoadChannels();
 	</script>
 </html>
